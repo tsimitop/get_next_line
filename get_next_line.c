@@ -14,9 +14,9 @@ char	*read_line(int fd, char *line_progression)
 		return (NULL);
 	if (line_progression == NULL) //
 	{
-printf("line_progression: %s\n", line_progression);
+// printf("line_progression: %s\n", line_progression);
 		line_progression = ft_calloc(1, sizeof(char)); //////////////////
-printf("line_progression 2: %s\n", line_progression);
+// printf("line_progression 2: %s\n", line_progression);
 	}
 		if (!line_progression)
 			return (NULL);
@@ -31,44 +31,26 @@ printf("line_progression 2: %s\n", line_progression);
 		temp = line_progression;
 		line_progression = ft_strjoin(temp, buffer); ///////////
 		free(temp);
-printf("line_progression 3: %s\n", line_progression);
+// printf("line_progression 3: %s\n", line_progression);
 	}
 	free(buffer);
 	return (line_progression);
 }
 
-// char	*read_line(int fd, char **line_progression)
-// {
-// 	int		read_chars;
-// 	char	*buffer;
+char	*create_final(char **left)
+{
+	int			size;
+	char		*final;
+	char		*ptr;
 
-// 	read_chars = 1;
-// 	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-// 	if (!buffer)
-// 		return (NULL);
+	ptr = *left;
+	size = ft_strchr(*left, '\n') - ptr + 1;
+	final = ft_substr(ptr, 0, size);
+	*left = ft_substr(ptr, size, ft_strlen(ptr) - size + 1);
+	free(ptr);
+	return (final);
+}
 
-// 	// Initialize line_progression to an empty string
-// 	if (*line_progression == NULL)
-// 		*line_progression = ft_calloc(1, sizeof(char));
-// // printf("line_progression: %s\n", &line_progression);
-// 	while (!ft_strchr(*line_progression, '\n') && read_chars > 0)
-// 	{
-// 		read_chars = read(fd, buffer, BUFFER_SIZE);
-// 		if (read_chars < 0)
-// 		{
-// 			free(buffer);
-// 			return (NULL);
-// 		}
-
-// 		buffer[read_chars] = '\0';  // Null-terminate the buffer after reading
-
-// 		*line_progression = ft_strjoin(*line_progression, buffer);
-// // printf("line_progression: %s\n", &line_progression);
-// 	}
-
-// 	free(buffer);
-// 	return (*line_progression);
-// }
 
 char	*get_next_line(int fd)
 {
@@ -76,9 +58,13 @@ char	*get_next_line(int fd)
 	char		*current_line;
 	// int			reading_position;
 
-	// current_line = 0;
+	current_line = 0;
 	// reading_position = 0;
-	current_line = read_line(fd, line_progression);
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	line_progression = read_line(fd, line_progression);
+	if (line_progression && *line_progression != 0)
+		current_line = create_final(&line_progression);
 	// reading_position += ft_strlen(current_line);
 	return (current_line);
 }

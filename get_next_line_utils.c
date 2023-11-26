@@ -90,3 +90,32 @@ void	*ft_calloc(size_t count, size_t size)
 	ft_bzero(ptr, size * count);
 	return (ptr);
 }
+
+// Allocates (with malloc(3)) and returns a substring from the string ’s’. The
+// substring begins at index ’start’ and is of maximum size ’len’.
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*cpy;
+	size_t	i;
+	size_t	len_create;
+	size_t	len_s;
+
+	i = 0;
+	len_s = ft_strlen(s);
+	// if (start >= len_s)
+	// 	return (NULL); ///			ERROR DETAILS WHEN COMMENTED
+	if (len_s - start < len)
+		len_create = len_s - start;
+	else
+		len_create = len;
+	cpy = (char *)malloc(len_create + 1);
+	if (!cpy)
+		return (NULL);
+	while (s[start + i] != '\0' && i < len_create)
+	{
+		cpy[i] = s[start + i];
+		i++;
+	}
+	cpy[i] = '\0';
+	return (cpy);
+}
