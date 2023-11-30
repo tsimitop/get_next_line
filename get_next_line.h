@@ -6,7 +6,7 @@
 /*   By: tsimitop <tsimitop@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/11 20:26:13 by tsimitop          #+#    #+#             */
-/*   Updated: 2023/11/26 19:14:29 by tsimitop         ###   ########.fr       */
+/*   Updated: 2023/11/29 19:52:36 by tsimitop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,6 @@ char	*ft_strchr(const char *s, int c);
 void	ft_bzero(void *s, size_t n);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+void	*ft_memcpy(void *dst, const void *src, size_t n);
 
 #endif
