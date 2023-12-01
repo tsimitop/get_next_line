@@ -8,24 +8,28 @@ char	*read_line(char *line_progression, int fd)
 	int		chars_read;
 
 	chars_read = 1;
-	while ((ft_strchr(line_progression, '\n') == NULL)) //chars_read > 0 && 
+	while ((gnl_strchr(line_progression, '\n') == 0) && chars_read > 0 && line_progression) //chars_read > 0
+	//  && \0 causes segfault			 && (gnl_strchr(line_progression, '\0')) == 0 separates each word
 	{
 		buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 		if (!buffer)
 			return (NULL);
+// printf("chars_read 0 = %d\n", chars_read);
 		chars_read = read(fd, buffer, BUFFER_SIZE);
+printf("chars_read 1 = %d\n", chars_read);
+printf("BUFFER = %s\n", buffer);
 		if (chars_read <= 0)
 			return (free(buffer), NULL);
-		// *line_progression = *buffer;
-		// line_progression++;
-		// buffer++;
+// printf("chars_read 2 = %d\n", chars_read);
 		line_progression = ft_strjoin(line_progression, buffer);
+printf("LINE PROGRESSION = %s\n", line_progression);
 		free(buffer);
+// printf("read li\n");
 	}
 	return (line_progression);
 }
 
-char	*return_line(char	*line_progression, int fd)
+char	*return_line(char	*line_progression)		//	, int fd
 {
 	char	*buffer;
 	int		i;
@@ -33,7 +37,7 @@ char	*return_line(char	*line_progression, int fd)
 	i = 0;
 	while (line_progression && line_progression[i] != '\0' && line_progression[i] != '\n')
 		i++;
-	printf("thaleia\n");
+// printf("thaleia\n");
 	buffer = ft_calloc(i + 1, sizeof(char));			// na 3exwrisw cases
 	if (!buffer)
 		return (NULL);
@@ -46,7 +50,7 @@ char	*return_line(char	*line_progression, int fd)
 	return (buffer);
 }
 
-char	*remaining_line(char *line_progression, int fd)
+char	*remaining_line(char *line_progression)		//	, int fd
 {
 	int		i;
 	int		j;
@@ -54,19 +58,27 @@ char	*remaining_line(char *line_progression, int fd)
 
 	i = 0;
 	j = 0;
+printf("rem line1\n");
 	if (!line_progression)
 		return (NULL);
-	while (line_progression && line_progression[i] != '\n')
+printf("rem line2\n");
+	while (line_progression && line_progression[i] != '\n' && line_progression[i] != '\0')
 	{
 		j++;
 		i++;
 	}
-	i++;
+// printf("rem line3\n");
+	i++;	// what if null?
+	// if (line_progression[i] == '\0')
+	// 	return (NULL);
+// printf("rem line4\n");
 	while (line_progression && line_progression[i] != '\n' && line_progression[i] != 0)
 		i++;
+// printf("rem line5\n");
 	remaining_chars = ft_calloc((i + 1) - j, sizeof(char));
 	if (!remaining_chars)
 		return (NULL);
+// printf("rem line6\n");
 	i = 0;
 	while (j > 0)
 	{
@@ -74,6 +86,8 @@ char	*remaining_line(char *line_progression, int fd)
 		i++;
 		j--;
 	}
+printf("REM LINE7\n");
+printf("REMAINING CHARS RVALUE: %s\n", remaining_chars);
 	return (remaining_chars);
 }
 
@@ -85,14 +99,36 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line_progression = ft_calloc(1, sizeof(char));
+	if (!line_progression)
+		return (NULL);
 	line_progression = read_line(line_progression, fd);
-	printf("test2\n");
+// printf("gnl1\n");
 	// if (!line_progression)
 	// 	return (NULL);
-	current_line = return_line(line_progression, fd);
-	printf("hello\n");
-	line_progression = remaining_line(line_progression, fd);
+	current_line = return_line(line_progression);		//	, int fd
+// printf("gnl2\n");
+	line_progression = remaining_line(line_progression);		//	, int fd
+printf("gnl3\n");
+	if (!line_progression)
+		return (NULL);
+printf("gnl4\n");
 	return (current_line);
+}
+
+
+// _____________________________________________________________________________
+
+int	main(void)
+{
+	int		fd;
+
+	fd = open("text.txt", O_RDONLY);
+	printf("			1ST CALL OF GNL;	%s	\n\n\n\n", get_next_line(fd));
+	printf("			2ND CALL OF GNL;	%s	\n\n\n\n", get_next_line(fd));
+	printf("			3RD CALL OF GNL;	%s	\n\n\n\n", get_next_line(fd));
+	printf("			4TH CALL OF GNL;	%s	\n\n\n\n", get_next_line(fd));
+	// printf("5;	%s	\n", get_next_line(fd));
+	close(fd);
 }
 
 // int main(void)
@@ -128,34 +164,6 @@ char	*get_next_line(int fd)
 // 	close(fd);
 // 	return (0);
 // }
-
-// _____________________________________________________________________________
-
-// int	main(void)
-// {
-// 	int		fd;
-// 	// char	*temp;
-
-// 	fd = open("text.txt", O_RDONLY);
-// 	printf("1;	%s	\n", get_next_line(fd));
-// 	printf("2;	%s	\n", get_next_line(fd));
-// 	printf("2;	%s	\n", get_next_line(fd));
-// 	printf("2;	%s	\n", get_next_line(fd));
-// 	printf("2;	%s	\n", get_next_line(fd));
-// 	// if (BUFFER_SIZE > 100)
-// 	// {
-// 	// 	do {
-// 	// 		temp = get_next_line(fd);
-// 	// 	free(temp);
-// 	// 	}
-// 	// while (temp != NULL)
-// 	// 	;
-// 	// }
-// 	// printf("3;	%s	", get_next_line(-1));
-// 	close(fd);
-// 	// fd = open("text.txt", O_RDONLY);
-// }
-
 
 // 	gia return_line
 // 	if (line_progression[i] == '\n')

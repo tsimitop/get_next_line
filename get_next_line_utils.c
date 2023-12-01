@@ -60,6 +60,31 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
+
+// The gnl_strchr() function locates the first occurrence of c (converted to a
+// char) in the string pointed to by s.
+int	gnl_strchr(const char *s, int c)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (0);
+	while (s[i] != '\0')
+	{
+		if (s[i] == (char)c)
+			return (i);
+		i++;
+	}
+	if ((char)c == '\0')
+	{
+		while (s[i] != '\0')
+			i++;
+		return (i);
+	}
+	return (0);
+}
+
 // The bzero() function writes n zeroed bytes to the string s.
 void	ft_bzero(void *s, size_t n)
 {
