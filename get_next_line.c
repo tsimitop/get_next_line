@@ -1,123 +1,172 @@
-// #include <stddef.h>
-// #include "get_next_line.h"
-// #include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsimitop <tsimitop@student.42heilbronn.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/03 18:12:05 by tsimitop          #+#    #+#             */
+/*   Updated: 2023/12/03 22:17:40 by tsimitop         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// char	*read_line(int fd, char *line_progression)
-// {
-// 	int		read_chars;
-// 	char	*buffer;
-// 	char	*temp;
+#include <stddef.h>
+#include "get_next_line.h"
+#include <stdio.h>
 
-// 	read_chars = 1;
-// 	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-// 	if (!buffer)
-// 		return (NULL);
-// 	if (line_progression == NULL) //
-// 	{
-// // printf("line_progression: %s\n", line_progression);
-// 		line_progression = ft_calloc(1, sizeof(char)); //////////////////
-// // printf("line_progression 2: %s\n", line_progression);
-// 	}
-// 		if (!line_progression)
-// 			return (NULL);
-// 	while (!ft_strchr(line_progression, '\n') && read_chars > 0)
-// 	{
-// 		read_chars = read(fd, buffer, BUFFER_SIZE);//
-// 		if (read_chars < 0)
-// 		{
-// 			free(buffer);
-// 			return (NULL);
-// 		}
-// 		temp = line_progression;
-// 		line_progression = ft_strjoin(temp, buffer); ///////////
-// 		free(temp);
-// // printf("line_progression 3: %s\n", line_progression);
-// 	}
-// 	free(buffer);
-// 	return (line_progression);
-// }
+char	*read_line(char *line_const, int fd)
+{
+	char	*buffer;
+	int		chars_read;
 
-// char	*create_final(char **line_progression)
-// {
-// 	int		size;
-// 	char	*final;
-// 	char	*ptr;
+	chars_read = 1;
+	while ((gnl_strchr(line_const, '\n') == 0) && chars_read > 0 && line_const)
+	{
+		buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		if (!buffer)
+			return (NULL);
+		chars_read = read(fd, buffer, BUFFER_SIZE);//-1 if error
+		if (chars_read == -1)
+			return (free(line_const), NULL);//, free(line_const),
+		// buffer[BUFFER_SIZE] = '\0';
+		// if (chars_read == -1)//check
+		// 	return (free(line_const), NULL);
+		line_const = ft_strjoin(line_const, buffer);
+		free(buffer);
+	}
+	return (line_const);
+}
 
-// 	ptr = *line_progression;
-// 	size = ft_strchr(*line_progression, '\n') - ptr + 1;
-// 	final = ft_substr(ptr, 0, size);
-// 	*line_progression = ft_substr(ptr, size, ft_strlen(ptr) - size + 1);
-// 	free(ptr);
-// 	return (final);
-// }
+char	*return_line(char	*line_const)
+{
+	char	*buffer;// allagh onomatos
+	int		i;
 
+	i = 0;
+	if (line_const[i] == '\0')
+		return (NULL);
+	while (line_const && line_const[i] != '\0' && line_const[i] != '\n')
+		i++;
+	if (line_const[i] == '\n')
+		i++;
+	buffer = ft_calloc(i + 1, sizeof(char));
+	if (!buffer)
+		return (free(line_const),line_const = NULL, NULL);//return (free(line_const),NULL);
+	// while (--i >= 0)
+	// 	buffer[i] = line_const[i];
+	i = 0;
+	while (line_const && line_const[i] != '\0' && line_const[i] != '\n')
+	{
+		buffer[i] = line_const[i];
+		i++;
+	}
+	if (line_const[i] == '\n')
+		buffer[i] = '\n';
+	return (buffer);
+}
 
-// char	*get_next_line(int fd)
-// {
-// 	static char *line_progression;
-// 	char		*current_line;
-// 	// int			reading_position;
+char	*remaining_line(char *line_const)
+{
+	int		i;
+	int		j;
+	int		o;
+	char	*remaining_chars;
 
-// 	current_line = 0;
-// 	// reading_position = 0;
-// 	if (fd < 0 || BUFFER_SIZE <= 0)
-// 		return (NULL);
-// 	line_progression = read_line(fd, line_progression);
-// 	if (line_progression && *line_progression != 0)
-// 		current_line = create_final(&line_progression);
-// 	// reading_position += ft_strlen(current_line);
-// 	return (current_line);
-// }
+	i = 0;
+	j = 0;
+	o = 0;
+	if (!line_const)
+		return (NULL);
+	if (line_const[i] == '\0')
+		return (free(line_const), NULL);
+	while (line_const && line_const[i] != '\n' && line_const[i] != '\0')
+		i++;
+	j = i;
+	while (line_const && line_const[i] != '\0') // line_const[i] != '\n' &&
+		i++;
+	remaining_chars = ft_calloc((i + 1) - j, sizeof(char));
+	if (!remaining_chars)
+		return (free(line_const), NULL);
+	if (line_const[i] != '\n')
+		j++;
+	while (line_const[j] != '\0') // read past alloc????
+		remaining_chars[o++] = line_const[j++];
+	return (free(line_const), line_const = NULL, remaining_chars);
+}
+// pointer after free set to NULL !!!!!!!!!!!!!!!!!!!!!!!!!!
+char	*get_next_line(int fd)
+{
+	static char	*line_const = NULL;
+	char		*current_line;
+	int			i;
 
-// // int main(void)
-// // {
-// // 	int			fd;
-// // 	char		*line;
-// // 	static int	count;
-// // 	// char		*current_line;
+	i = 0;
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0) //<0
+		return (free(line_const),line_const = NULL, NULL);//line_const = NULL sets pointer to NULL
+	if (line_const == NULL)
+	{
+		line_const = ft_calloc(1, sizeof(char));
+		if (!line_const)
+			return (NULL);
+	}
+	line_const = read_line(line_const, fd);
+	if (!line_const)
+		return (NULL);// return null
+	current_line = return_line(line_const);
+	// if (!current_line || current_line[i] == '\0')// || current_line == 0 //return null
+	// 	return (NULL);		check entos functions
+	line_const = remaining_line(line_const);
+	// if (!line_const)
+	// 	return (NULL);
+	return (current_line);
+}
 
-// // 	// current_line = "hello, \n how am I doing?";
-// // 	count = 0;
-// // 	fd = open("text.txt", O_RDONLY);
-// // 	// line = get_next_line(fd);
-// // 	// count++;
-// // 	// printf("[%d]: %s\n", count, line);
-// // 	// line = NULL;
-// // 	if (fd == -1)
-// // 	{
-// // 		printf("Error opening file");
-// // 		return (1);
-// // 	}
-// // 	while (1)
-// // 	{
-// // 		line = get_next_line(fd);
-// // 		if (line == NULL)
-// // 			break ;
-// // 		printf("[%d]:%s\n", count, line);
-// // 		line = NULL;
-// // 	}
-// // 	close(fd);
-// // 	return (0);
-// // }
+// _____________________________________________________________________________
 
 // int	main(void)
 // {
 // 	int		fd;
-// 	// char	*temp;
 
 // 	fd = open("text.txt", O_RDONLY);
-// 	printf("1;	%s	\n", get_next_line(fd));
-// 	printf("2;	%s	\n", get_next_line(fd));
-// 	// if (BUFFER_SIZE > 100)
-// 	// {
-// 	// 	do {
-// 	// 		temp = get_next_line(fd);
-// 	// 	free(temp);
-// 	// 	}
-// 	// while (temp != NULL)
-// 	// 	;
-// 	// }
-// 	// printf("3;	%s	", get_next_line(-1));
+// 	printf("%s", get_next_line(fd));
+// 	printf("%s", get_next_line(fd));
+// 	printf("%s", get_next_line(fd));
+// 	printf("%s", get_next_line(fd));
+// 	printf("%s", get_next_line(fd));
+// 	printf("%s", get_next_line(fd));
+// 	// printf("%s", get_next_line(2));
+// 	// printf("%s", get_next_line(fd));
 // 	close(fd);
-// 	// fd = open("text.txt", O_RDONLY);
+// }
+
+// int main(void)
+// {
+// 	int			fd;
+// 	char		*line;
+// 	static int	count;
+// 	// char		*current_line;
+
+// 	// current_line = "hello, \n how am I doing?";
+// 	count = 0;
+// 	fd = open("text.txt", O_RDONLY);
+// 	// line = get_next_line(fd);
+// 	// count++;
+// 	// printf("[%d]: %s\n", count, line);
+// 	line = NULL;
+// 	// if (fd == -1)
+// 	// {
+// 	// 	printf("Error opening file");
+// 	// 	return (1);
+// 	// }
+// 	while (1)
+// 	{
+// 		line = get_next_line(fd);
+// 		if (line == NULL)
+// 			break ;
+// 		printf("[%d]:%s\n", count, line);
+// 		count++;
+// 		free(line);
+// 	}
+// 	close(fd);
+// 	return (0);
 // }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsimitop <tsimitop@student.42heilbronn.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/03 18:12:25 by tsimitop          #+#    #+#             */
+/*   Updated: 2023/12/03 21:09:16 by tsimitop         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 size_t	ft_strlen(const char *str)
@@ -12,7 +24,7 @@ size_t	ft_strlen(const char *str)
 
 // Allocates (with malloc(3)) and returns a newstring, which is the result 
 // of the concatenationof ’s1’ and ’s2’.
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*ptr;
 	int		i;
@@ -37,33 +49,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 	}
 	ptr[j] = '\0';
+	free(s1);
 	return (ptr);
 }
 
-// The strchr() function locates the first occurrence of c (converted to a char)
-// in the string pointed to by s.
-char	*ft_strchr(const char *s, int c)
-{
-	int	i;
-
-	i = 0;
-	if (!s)
-		return (NULL);
-	while (s[i] != '\0')
-	{
-		if (s[i] == (char)c)
-			return ((char *)&s[i]);
-		i++;
-	}
-	if ((char)c == '\0')
-		return ((char *)&s[i]);
-	return (NULL);
-}
-
-
 // The gnl_strchr() function locates the first occurrence of c (converted to a
 // char) in the string pointed to by s.
-int	gnl_strchr(const char *s, int c)
+int	gnl_strchr(char *s, int c)
 {
 	int	i;
 
@@ -86,7 +78,7 @@ int	gnl_strchr(const char *s, int c)
 }
 
 // The bzero() function writes n zeroed bytes to the string s.
-void	ft_bzero(void *s, size_t n)
+static void	ft_bzero(void *s, size_t n)
 {
 	size_t			i;
 	unsigned char	*uc;
@@ -110,33 +102,4 @@ void	*ft_calloc(size_t count, size_t size)
 		return (NULL);
 	ft_bzero(ptr, size * count);
 	return (ptr);
-}
-
-// Allocates (with malloc(3)) and returns a substring from the string ’s’. The
-// substring begins at index ’start’ and is of maximum size ’len’.
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*cpy;
-	size_t	i;
-	size_t	len_create;
-	size_t	len_s;
-
-	i = 0;
-	len_s = ft_strlen(s);
-	// if (start >= len_s)
-	// 	return (NULL); ///			ERROR DETAILS WHEN COMMENTED
-	if (len_s - start < len)
-		len_create = len_s - start;
-	else
-		len_create = len;
-	cpy = (char *)malloc(len_create + 1);
-	if (!cpy)
-		return (NULL);
-	while (s[start + i] != '\0' && i < len_create)
-	{
-		cpy[i] = s[start + i];
-		i++;
-	}
-	cpy[i] = '\0';
-	return (cpy);
 }
