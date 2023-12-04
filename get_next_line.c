@@ -6,7 +6,7 @@
 /*   By: tsimitop <tsimitop@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 18:12:05 by tsimitop          #+#    #+#             */
-/*   Updated: 2023/12/03 22:17:40 by tsimitop         ###   ########.fr       */
+/*   Updated: 2023/12/04 17:45:33 by tsimitop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ char	*read_line(char *line_const, int fd)
 			return (NULL);
 		chars_read = read(fd, buffer, BUFFER_SIZE);//-1 if error
 		if (chars_read == -1)
-			return (free(line_const), NULL);//, free(line_const),
+			return (free(line_const), free(buffer), buffer = NULL, line_const = NULL, NULL);//, free(line_const),			!!!!!!!!!!!
 		// buffer[BUFFER_SIZE] = '\0';
-		// if (chars_read == -1)//check
-		// 	return (free(line_const), NULL);
+		// if (chars_read == 0)//check			epi to pleiston xeirotera, isos xreiazetai kai alla check
+		// 	return (free(buffer), line_const);
 		line_const = ft_strjoin(line_const, buffer);
 		free(buffer);
 	}
@@ -78,7 +78,7 @@ char	*remaining_line(char *line_const)
 	if (!line_const)
 		return (NULL);
 	if (line_const[i] == '\0')
-		return (free(line_const), NULL);
+		return (free(line_const), line_const = NULL, NULL);//return (free(line_const), line_const = NULL, NULL);
 	while (line_const && line_const[i] != '\n' && line_const[i] != '\0')
 		i++;
 	j = i;
@@ -116,6 +116,7 @@ char	*get_next_line(int fd)
 	// if (!current_line || current_line[i] == '\0')// || current_line == 0 //return null
 	// 	return (NULL);		check entos functions
 	line_const = remaining_line(line_const);
+// dprintf(2, ">>%p<<", line_const);
 	// if (!line_const)
 	// 	return (NULL);
 	return (current_line);
@@ -128,7 +129,6 @@ char	*get_next_line(int fd)
 // 	int		fd;
 
 // 	fd = open("text.txt", O_RDONLY);
-// 	printf("%s", get_next_line(fd));
 // 	printf("%s", get_next_line(fd));
 // 	printf("%s", get_next_line(fd));
 // 	printf("%s", get_next_line(fd));
