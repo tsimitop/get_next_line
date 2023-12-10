@@ -6,7 +6,7 @@
 /*   By: tsimitop <tsimitop@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 18:12:25 by tsimitop          #+#    #+#             */
-/*   Updated: 2023/12/07 19:03:20 by tsimitop         ###   ########.fr       */
+/*   Updated: 2023/12/10 17:19:53 by tsimitop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char	*ft_strchr(char *s, int c)
 }
 
 // Allocates (with malloc(3)) and returns a newstring, which is the result 
-// of the concatenationof ’s1’ and ’s2’.
+// of the concatenation of ’s1’ and ’s2’.
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*ptr;
