@@ -6,13 +6,13 @@
 /*   By: tsimitop <tsimitop@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 18:12:25 by tsimitop          #+#    #+#             */
-/*   Updated: 2023/12/04 16:54:29 by tsimitop         ###   ########.fr       */
+/*   Updated: 2023/12/11 17:56:57 by tsimitop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *str)
+size_t	ft_strlen(char *str)
 {
 	int	i;
 
@@ -22,8 +22,28 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
+char	*ft_strchr(char *s, int c)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == (char)c)
+		{
+			return ((char *)&s[i]);
+		}
+		i++;
+	}
+	if ((char)c == '\0')
+	{
+		return ((char *)&s[i]);
+	}
+	return (NULL);
+}
+
 // Allocates (with malloc(3)) and returns a newstring, which is the result 
-// of the concatenationof ’s1’ and ’s2’.
+// of the concatenation of ’s1’ and ’s2’.
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*ptr;
@@ -32,53 +52,27 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	i = 0;
 	j = 0;
-	ptr = (char *)malloc((ft_strlen(s1) + ft_strlen(s2)) + 1);
-	if (!ptr)
+	if (s1 == NULL || s2 == NULL)
 		return (NULL);
-	while (s1[i] != '\0')
+	ptr = (char *)ft_calloc((ft_strlen(s1) + ft_strlen(s2)) + 1, 1);
+	if (!ptr)
 	{
-		ptr[j] = s1[i];
-		j++;
-		i++;
+		if (ft_strlen(s1) == 0)
+			return (free(s1), NULL);
+		return (s1);
 	}
-	i = 0;
+	while (s1[j] != '\0')
+	{
+		ptr[j] = s1[j];
+		j++;
+	}
 	while (s2[i] != '\0')
-	{
-		ptr[j] = s2[i];
-		j++;
-		i++;
-	}
-	ptr[j] = '\0';
-	free(s1);
-	return (ptr);
-}
-
-// The gnl_strchr() function locates the first occurrence of c (converted to a
-// char) in the string pointed to by s.
-int	gnl_strchr(char *s, int c)
-{
-	int	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i] != '\0')
-	{
-		if (s[i] == (char)c)
-			return (i);
-		i++;
-	}
-	if ((char)c == '\0')
-	{
-		while (s[i] != '\0')
-			i++;
-		return (i);
-	}
-	return (0);
+		ptr[j++] = s2[i++];
+	return (free(s1), ptr);
 }
 
 // The bzero() function writes n zeroed bytes to the string s.
-static void	ft_bzero(void *s, size_t n)
+void	ft_bzero(void *s, size_t n)
 {
 	size_t			i;
 	unsigned char	*uc;
@@ -97,9 +91,14 @@ void	*ft_calloc(size_t count, size_t size)
 {
 	int	*ptr;
 
-	ptr = malloc(size * count);
-	if (!ptr)
+	if (size == 0 || count == 0)
 		return (NULL);
-	ft_bzero(ptr, size * count);
-	return (ptr);
+	else
+	{
+		ptr = malloc(size * count);
+		if (!ptr)
+			return (NULL);
+		ft_bzero(ptr, size * count);
+		return (ptr);
+	}
 }

@@ -1,5 +1,0 @@
-Line one.
-Line two.
-Line 123.
-lin extra
-kolhsid/
