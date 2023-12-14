@@ -6,7 +6,7 @@
 /*   By: tsimitop <tsimitop@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 18:12:25 by tsimitop          #+#    #+#             */
-/*   Updated: 2023/12/11 17:56:57 by tsimitop         ###   ########.fr       */
+/*   Updated: 2023/12/14 13:39:11 by tsimitop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,9 @@ char	*ft_strjoin(char *s1, char *s2)
 	j = 0;
 	if (s1 == NULL || s2 == NULL)
 		return (NULL);
-	ptr = (char *)ft_calloc((ft_strlen(s1) + ft_strlen(s2)) + 1, 1);
+	ptr = (char *)ft_calloc((ft_strlen(s1) + ft_strlen(s2)) + 1, sizeof(char));
 	if (!ptr)
-	{
-		if (ft_strlen(s1) == 0)
-			return (free(s1), NULL);
 		return (s1);
-	}
 	while (s1[j] != '\0')
 	{
 		ptr[j] = s1[j];
